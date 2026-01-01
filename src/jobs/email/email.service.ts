@@ -1,54 +1,59 @@
 import prisma from '@config/db/prisma';
 import Logger from '@config/logger';
-import { EmailPayload } from './email.types';
+import { EmailPayload } from '../../interface/email/email.types';
+import { Recipient } from '@prisma/client';
 
-/**
- * Servicio de dominio para el envío de correos electrónicos.
- * Contiene la lógica de negocio pura, desacoplada de la infraestructura de colas.
- */
+const logger = new Logger('EmailService');
+
+
+
 export class EmailService {
-  /**
-   * Ejecuta el flujo de envío de correo electrónico.
-   *
-   * 1. Recupera el registro del Job desde la base de datos usando `jobUuid`.
-   * 2. Actualiza el estado a PROCESSING.
-   * 3. (Pendiente) Envía el correo usando MailerLib.
-   * 4. Actualiza el estado a COMPLETED.
-   *
-   * @param data - Payload del job conteniendo el UUID del registro en BD.
-   * @returns Promesa que se resuelve al completar el flujo.
-   */
   async send(data: EmailPayload): Promise<void> {
+
+    logger.debug(`[EmailService] Iniciando procesamiento de JOB UUID: ${data.jobUuid}`);
+   
+    // 1. Buscar el Job e incluimos los destinatarios
     const email = await prisma.emailJob.findUnique({
       where: {
         id: data.jobUuid,
       },
+      include: {
+        recipients: true,
+      },
     });
 
+     
+
     if (!email) {
+      logger.error(
+        `[EmailService] Intento de procesar Job inexistente ${data.jobUuid}`
+      );
       throw new Error('Email no encontrado');
     }
 
+    // 2. Actualizamos el estado a PROCESSING
     await prisma.emailJob.update({
-      where: {
-        id: email.id,
-      },
+      where: { id: email.id },
       data: {
-        status: prisma.emailJobStatus.PROCESSING,
+        status: 'PROCESSING',
+        startedAt: new Date(),
       },
     });
 
-    const recipients = email.recipients as string[];
-    Logger.info(
-      `Enviando email a ${recipients.join(', ')} con asunto "${email.subject}"`
+    // 3. Mapear los destinatarios
+   const recipientList = email.recipients.map((r: Recipient) => r.email);
+
+
+    logger.info(
+      `Enviando email a ${recipientList.join(', ')} con asunto "${email.subject}"`
     );
 
+    // 4. Finalizamos actualizando a COMPLETED
     await prisma.emailJob.update({
-      where: {
-        id: email.id,
-      },
+      where: { id: email.id },
       data: {
-        status: prisma.emailJobStatus.COMPLETED,
+        status: 'COMPLETED',
+        completedAt: new Date(),
       },
     });
   }
