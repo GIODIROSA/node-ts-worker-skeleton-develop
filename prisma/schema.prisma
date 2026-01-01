@@ -1,0 +1,89 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+// ==========================================
+// MODELO: EmailJob (La Campaña/Tarea Madre)
+// ==========================================
+model EmailJob {
+  id           String    @id @default(uuid())
+  subject      String    @db.VarChar(200)
+  body         String    @db.LongText // Cambiado a LongText para HTML pesado
+  
+  status       JobStatus @default(PENDING)
+  
+  // Estadísticas para la barra de progreso en tiempo real
+  totalEmails  Int
+  sentEmails   Int       @default(0)
+  failedEmails Int       @default(0)
+  
+  createdAt    DateTime  @default(now())
+  startedAt    DateTime?
+  completedAt  DateTime?
+  error        String?   @db.Text // Error global del Job si colapsa
+
+  // Relaciones
+  recipients   Recipient[] // Relación 1:N con la nueva tabla de destinatarios
+  logs         EmailLog[]
+
+  @@map("email_jobs")
+}
+
+// ==========================================
+// MODELO: Recipient (Seguimiento individual)
+// ==========================================
+model Recipient {
+  id         String    @id @default(uuid())
+  email      String    @db.VarChar(255)
+  
+  // Estado individual para el reporte detallado
+  status     RecipientStatus @default(PENDING)
+  error      String?   @db.Text // Por qué falló este email específico
+  
+  sentAt     DateTime?
+  
+  // Relación con el Job
+  emailJobId String
+  emailJob   EmailJob  @relation(fields: [emailJobId], references: [id], onDelete: Cascade)
+
+  @@index([emailJobId])
+  @@map("recipients")
+}
+
+// ==========================================
+// MODELO: EmailLog (Logs de sistema/infra)
+// ==========================================
+model EmailLog {
+  id         String   @id @default(uuid())
+  emailJobId String
+  message    String   @db.Text
+  level      String   @default("INFO") @db.VarChar(10) // INFO, WARN, ERROR
+  createdAt  DateTime @default(now())
+
+  emailJob   EmailJob @relation(fields: [emailJobId], references: [id], onDelete: Cascade)
+
+  @@index([emailJobId])
+  @@map("email_logs")
+}
+
+// ==========================================
+// ENUMS
+// ==========================================
+enum JobStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+  CANCELLED
+}
+
+enum RecipientStatus {
+  PENDING
+  SENT
+  FAILED
+}

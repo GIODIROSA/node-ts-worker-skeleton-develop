@@ -1,0 +1,50 @@
+{
+  "name": "node-ts-worker-skeleton",
+  "version": "1.0.0",
+  "description": "Worker service skeleton using Bull and Redis",
+  "main": "dist/worker.js",
+  "scripts": {
+    "dev": "ts-node-dev --respawn --transpile-only --require tsconfig-paths/register src/worker.ts",
+    "build": "tsc && copyfiles -u 1 \"src/**/*.hbs\" dist/",
+    "start": "node dist/worker.js",
+    "lint": "eslint . --ext .ts",
+    "format": "prettier --write \"src/**/*.ts\"",
+    "docker:up": "docker-compose up -d",
+    "docker:down": "docker-compose down",
+    "docker:logs": "docker-compose logs -f"
+  },
+  "dependencies": {
+    "@prisma/client": "^7.2.0",
+    "@types/nodemailer": "^7.0.4",
+    "bull": "^4.12.0",
+    "dotenv": "^16.4.0",
+    "handlebars": "^4.7.8",
+    "ioredis": "^5.3.0",
+    "module-alias": "^2.2.3",
+    "nodemailer": "^7.0.11",
+    "winston": "^3.11.0",
+    "winston-daily-rotate-file": "^5.0.0"
+  },
+  "devDependencies": {
+    "@types/bull": "^3.15.9",
+    "@types/node": "^20.11.0",
+    "@typescript-eslint/eslint-plugin": "^6.19.0",
+    "@typescript-eslint/parser": "^6.19.0",
+    "copyfiles": "^2.4.1",
+    "eslint": "^8.56.0",
+    "prettier": "^3.2.0",
+    "prisma": "^7.2.0",
+    "ts-node": "^10.9.2",
+    "ts-node-dev": "^2.0.0",
+    "tsconfig-paths": "^4.2.0",
+    "typescript": "^5.3.0"
+  },
+  "_moduleAliases": {
+    "@config": "dist/config",
+    "@core": "dist/core",
+    "@jobs": "dist/jobs",
+    "@middlewares": "dist/middlewares",
+    "@utils": "dist/utils",
+    "@libs": "dist/libs"
+  }
+}

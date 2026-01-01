@@ -1,0 +1,18 @@
+# Directorios
+dist/
+build/
+node_modules/
+coverage/
+prisma/
+
+# Archivos
+*.config.js
+.eslintrc.cjs
+*.min.js
+
+# Logs
+*.log
+
+# Temporales
+.env
+.env.*

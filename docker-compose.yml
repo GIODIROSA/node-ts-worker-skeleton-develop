@@ -1,0 +1,60 @@
+version: '3.8'
+
+services:
+  # =============================================================================
+  # BASE DE DATOS (MySQL)
+  # =============================================================================
+  mysql:
+    image: mysql:8.0
+    container_name: mysql-db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: worker_db
+    ports:
+      - "3306:3306"
+    networks:
+      - email-network
+
+  # =============================================================================
+  # COLA Y CACHÉ (Redis)
+  # =============================================================================
+  redis:
+    image: redis:7.0-alpine
+    container_name: redis-queue
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    networks:
+      - email-network
+
+  # =============================================================================
+  # WORKER SERVICE
+  # =============================================================================
+  worker:
+    container_name: node-ts-worker
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: runner
+    restart: unless-stopped
+    depends_on:
+      - mysql
+      - redis
+    environment:
+      - NODE_ENV=${NODE_ENV:-development}
+      - DATABASE_URL=mysql://root:password@mysql:3306/worker_db
+      - REDIS_URL=redis://redis:6379
+      - QUEUE_NAME_EMAIL=${QUEUE_NAME_EMAIL}
+      - QUEUE_NAME_REPORTS=${QUEUE_NAME_REPORTS}
+      - LOG_LEVEL=${LOG_LEVEL:-info}
+      - SMTP_HOST=${SMTP_HOST}
+      - SMTP_PORT=${SMTP_PORT}
+      - SMTP_USER=${SMTP_USER}
+      - SMTP_PASS=${SMTP_PASS}
+    networks:
+      - email-network
+
+networks:
+  email-network:
+    driver: bridge
