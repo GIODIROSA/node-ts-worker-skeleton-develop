@@ -2,7 +2,10 @@
   "compilerOptions": {
     "target": "es2020",
     "module": "commonjs",
-    "lib": ["es2020", "esnext.asynciterable"],
+    "lib": [
+      "es2020",
+      "esnext.asynciterable"
+    ],
     "skipLibCheck": true,
     "sourceMap": true,
     "outDir": "./dist",
@@ -23,14 +26,27 @@
     "resolveJsonModule": true,
     "baseUrl": ".",
     "paths": {
-      "@config/*": ["src/config/*"],
-      "@core/*": ["src/core/*"],
-      "@jobs/*": ["src/jobs/*"],
-      "@middlewares/*": ["src/middlewares/*"],
-      "@utils/*": ["src/utils/*"],
-      "@libs/*": ["src/libs/*"]
+      "@config/*": [
+        "src/config/*"
+      ],
+      "@core/*": [
+        "src/core/*"
+      ],
+      "@jobs/*": [
+        "src/jobs/*"
+      ],
+      "@utils/*": [
+        "src/utils/*"
+      ],
+      "@libs/*": [
+        "src/libs/*"
+      ]
     }
   },
-  "exclude": ["node_modules"],
-  "include": ["src/**/*.ts"]
+  "exclude": [
+    "node_modules"
+  ],
+  "include": [
+    "src/**/*.ts"
+  ]
 }
