@@ -42,7 +42,6 @@ export const createEmailJob = async (req: Request, res: Response) => {
 
 
     await emailQueue.add(
-      'send-email-job', 
       { jobUuid: newJob.id } 
     );
 
