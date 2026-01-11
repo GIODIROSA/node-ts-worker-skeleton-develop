@@ -112,8 +112,8 @@ export class EmailService {
         failedCount++;
       }
 
-      // Rate Limiting: Esperar 3 segundos entre correos para asegurar que Mailtrap lo acepte
-      await new Promise(resolve => setTimeout(resolve, 3000));
+      // Rate Limiting: Esperar 10 segundos entre correos (Modo seguro para Mailtrap Demo/Free)
+      await new Promise(resolve => setTimeout(resolve, 1000));
     }
 
     // 4. Finalizamos actualizando el Job con contadores y estado final

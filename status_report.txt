@@ -1,16 +1,16 @@
-🔍 Job ID: 952be536-a66c-47e5-92fd-7488f898ccb0
+🔍 Job ID: 33221d12-f248-4716-a214-131016979866
 📊 Status Global: COMPLETED
 📈 Stats: Sent=1, Failed=1
 --- Destinatarios ---
 {
-  "email": "test2@example.com",
-  "name": "Ana",
+  "email": "test1@example.com",
+  "name": "Giovanni",
   "status": "SENT",
   "error": null
 }
 {
-  "email": "test1@example.com",
-  "name": "Giovanni",
+  "email": "test2@example.com",
+  "name": "Ana",
   "status": "FAILED",
   "error": "Data command failed: 550 5.7.0 Too many emails per second. Please upgrade your plan https://mailtrap.io/billing/plans/testing"
 }
