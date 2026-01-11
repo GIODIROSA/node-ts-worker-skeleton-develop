@@ -1,0 +1,16 @@
+🔍 Job ID: e0a840b4-b941-4300-b8b6-06660bf0d2b8
+📊 Status Global: COMPLETED
+📈 Stats: Sent=1, Failed=1
+--- Destinatarios ---
+{
+  "email": "test1@example.com",
+  "name": "Giovanni",
+  "status": "SENT",
+  "error": null
+}
+{
+  "email": "test2@example.com",
+  "name": "Ana",
+  "status": "FAILED",
+  "error": "Data command failed: 550 5.7.0 Too many emails per second. Please upgrade your plan https://mailtrap.io/billing/plans/testing"
+}

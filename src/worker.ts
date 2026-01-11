@@ -1,8 +1,8 @@
+import 'module-alias/register';
 import { ENV } from '@config/constants';
 import Logger from '@config/logger';
 import { QueueFactory } from '@core/queue-factory';
 import { loadJobs } from '@jobs/jobs.loader';
-import 'module-alias/register';
 
 /**
  * Función de arranque del Worker.
